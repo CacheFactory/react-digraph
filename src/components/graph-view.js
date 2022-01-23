@@ -94,6 +94,8 @@ class GraphView extends React.Component<IGraphViewProps, IGraphViewState> {
     zoomDur: 750,
     rotateEdgeHandle: true,
     centerNodeOnMove: true,
+    deleteButton: true,
+    edgeButton: true,
   };
 
   static getDerivedStateFromProps(
@@ -516,7 +518,6 @@ class GraphView extends React.Component<IGraphViewProps, IGraphViewState> {
       componentUpToDate: false,
       hoveredNode: false,
     });
-
     // remove from UI
     GraphUtils.removeElementFromDom(
       `node-${nodeID}-container`,
@@ -776,7 +777,6 @@ class GraphView extends React.Component<IGraphViewProps, IGraphViewState> {
       focused: true,
       svgClicked: true,
     });
-
     onSelect && onSelect({ nodes: null, edges: null });
   };
 
@@ -791,6 +791,32 @@ class GraphView extends React.Component<IGraphViewProps, IGraphViewState> {
   };
 
   handleDocumentClick = (event: any) => {
+    // hack to get SVG click event
+    if (
+      event &&
+      event.target &&
+      event.target.className &&
+      event.target.className.baseVal == 'delete-button-circle'
+    ) {
+      const { selected } = this.props;
+
+      if (selected && (selected.nodes?.size || selected.edges?.size)) {
+        // Grr some timing issue
+        setTimeout(() => {
+          this.handleDelete(selected);
+        }, 300);
+      }
+    }
+
+    if (
+      event &&
+      event.target &&
+      event.target.className &&
+      event.target.className.baseVal == 'edge-button-circle'
+    ) {
+      this.setState({ draggingEdge: true });
+    }
+
     // Ignore document click if it's in the SVGElement
     if (
       event &&
@@ -1006,7 +1032,7 @@ class GraphView extends React.Component<IGraphViewProps, IGraphViewState> {
     // This will handle a new edge
     let onUpdateNodePromise = Promise.resolve();
 
-    if (shiftKey && hoveredNode && edgeEndNode) {
+    if (hoveredNode && edgeEndNode) {
       this.createNewEdge();
     } else {
       if (draggingEdge) {
@@ -1518,6 +1544,8 @@ class GraphView extends React.Component<IGraphViewProps, IGraphViewState> {
         viewWrapperElem={this.viewWrapper.current}
         centerNodeOnMove={centerNodeOnMove}
         maxTitleChars={maxTitleChars}
+        deleteButton={this.props.deleteButton}
+        edgeButton={this.props.edgeButton}
       />
     );
   };

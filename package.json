@@ -37,6 +37,7 @@
     "kld-affine": "2.0.4",
     "kld-intersections": "^0.4.3",
     "line-intersect": "^2.1.1",
+    "lodash": "^4.17.21",
     "svg-intersections": "^0.4.0"
   },
   "devDependencies": {

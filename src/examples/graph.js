@@ -20,7 +20,7 @@
 */
 
 import * as React from 'react';
-
+import _ from 'lodash';
 import {
   GraphView,
   type IEdgeType as IEdge,
@@ -583,6 +583,54 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
     }
   };
 
+  onDeleteSelected = (selected: SelectionT) => {
+    const graph = this.state.graph;
+
+    if (selected.edges) {
+      selected.edges.forEach(deletedEdge => {
+        _.remove(graph.edges, edge => {
+          const remove =
+            edge.target == deletedEdge.target &&
+            edge.source == deletedEdge.source;
+
+          // TODO hack to remove edges
+          if (remove) {
+            this.GraphView.removeEdgeElement(edge.source, edge.target);
+          }
+
+          return remove;
+        });
+      });
+    }
+
+    if (selected.nodes) {
+      selected.nodes.forEach(deletedNode => {
+        _.remove(graph.nodes, node => {
+          return deletedNode.id == node.id;
+        });
+
+        _.remove(graph.edges, edge => {
+          const remove =
+            edge.source == deletedNode.id || edge.target == deletedNode.id;
+
+          // TODO hack to remove edges
+          if (remove) {
+            this.GraphView.removeEdgeElement(edge.source, edge.target);
+          }
+
+          return remove;
+        });
+      });
+    }
+
+    this.setState({
+      graph: this.state.graph,
+      selected: null,
+      saved: false,
+      unsavedChanges: true,
+    });
+  };
+
   /*
    * Render
    */
@@ -642,6 +690,7 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
             onUpdateNode={this.onUpdateNode}
             onDeleteNode={this.onDeleteNode}
             onCreateEdge={this.onCreateEdge}
+            onDeleteSelected={this.onDeleteSelected}
             onSwapEdge={this.onSwapEdge}
             onDeleteEdge={this.onDeleteEdge}
             onUndo={this.onUndo}

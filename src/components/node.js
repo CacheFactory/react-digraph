@@ -77,6 +77,8 @@ type INodeProps = {
   viewWrapperElem: HTMLDivElement,
   centerNodeOnMove?: boolean,
   maxTitleChars?: number,
+  deleteButton: boolean,
+  edgeButton: boolean,
 };
 
 function Node({
@@ -94,6 +96,8 @@ function Node({
   centerNodeOnMove = true,
   layoutEngine,
   viewWrapperElem,
+  deleteButton,
+  edgeButton,
   renderNodeText,
   renderNode,
   onNodeMouseEnter = () => {},
@@ -146,6 +150,10 @@ function Node({
 
     if (!oldSibling.current) {
       oldSibling.current = nodeRef.current.parentElement.nextSibling;
+    }
+
+    if (!nodeRef.current.parentElement.parentElement) {
+      return;
     }
 
     // Moves child to the end of the element stack to re-arrange the z-index
@@ -303,6 +311,55 @@ function Node({
           isSelected={isSelected}
           maxTitleChars={maxTitleChars}
         />
+      )}
+      {isSelected && deleteButton && (
+        <g className="delete-button">
+          <text
+            x={-nodeWidth / 2 + 20}
+            y={-nodeHeight / 2 + 40}
+            textAnchor="middle"
+            stroke="black"
+            strokeWidth="2px"
+            dy=".3em"
+          >
+            X
+          </text>
+          <circle
+            className="delete-button-circle"
+            cx={-nodeWidth / 2 + 20}
+            cy={-nodeHeight / 2 + 40}
+            r="15"
+            fill="red"
+            fillOpacity="0.7"
+            stroke="black"
+            strokeWidth="1px"
+          ></circle>
+        </g>
+      )}
+      {isSelected && edgeButton && (
+        <g className="edge-button">
+          <text
+            x={nodeWidth / 2 - 20}
+            y={-nodeHeight / 2 + 40}
+            textAnchor="middle"
+            stroke="black"
+            strokeWidth="2px"
+            dy=".3em"
+            fontSize="20px"
+          >
+            +
+          </text>
+          <circle
+            className="edge-button-circle"
+            cx={nodeWidth / 2 - 20}
+            cy={-nodeHeight / 2 + 40}
+            r="15"
+            fill="yellow"
+            fillOpacity="0.7"
+            stroke="black"
+            strokeWidth="1px"
+          ></circle>
+        </g>
       )}
     </g>
   );

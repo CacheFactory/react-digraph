@@ -108,4 +108,5 @@ export type IGraphViewProps = {
   centerNodeOnMove?: boolean,
   initialBBox?: IBBox,
   nodeLocationOverrides?: Object,
+  deleteButton: boolean,
 };
