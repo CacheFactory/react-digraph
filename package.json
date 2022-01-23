@@ -1,7 +1,7 @@
 {
   "name": "react-digraph",
   "description": "directed graph react component",
-  "version": "8.0.0-beta.8",
+  "version": "8.0.1-beta.8",
   "keywords": [
     "uber-library",
     "babel",
@@ -177,8 +177,5 @@
       "\\.(scss)$": "<rootDir>/__mocks__/styles.mock.js",
       "@fortawesome/fontawesome-free/svgs/solid/expand.svg": "<rootDir>/__mocks__/icon.mock.js"
     }
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
   }
 }
